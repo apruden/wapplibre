@@ -8,7 +8,38 @@ import {
   flexRender,
 } from '@tanstack/react-table';
 import { useNavigate } from 'react-router-dom';
-import { Container, Row, Col, Card, Form, Button, Table, Badge, ButtonGroup, ButtonToolbar } from 'react-bootstrap';
+import {
+  Container,
+  Grid,
+  Card,
+  CardContent,
+  CardHeader,
+  TextField,
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Chip,
+  ButtonGroup,
+  Stack,
+  Typography,
+  Box,
+  InputAdornment,
+  IconButton,
+} from '@mui/material';
+import {
+  Edit as EditIcon,
+  Visibility as VisibilityIcon,
+  FirstPage as FirstPageIcon,
+  LastPage as LastPageIcon,
+  ChevronLeft as ChevronLeftIcon,
+  ChevronRight as ChevronRightIcon,
+  Search as SearchIcon,
+} from '@mui/icons-material';
 
 export default function EntitiesList() {
   const navigate = useNavigate();
@@ -82,8 +113,8 @@ export default function EntitiesList() {
             header: 'Status',
             cell: info => {
               const status = info.getValue();
-              const variant = status.toLowerCase() === 'active' ? 'success' : 'danger';
-              return <Badge bg={variant}>{status}</Badge>;
+              const color = status.toLowerCase() === 'active' ? 'success' : 'error';
+              return <Chip label={status} color={color} size="small" />;
             },
           },
           {
@@ -94,22 +125,24 @@ export default function EntitiesList() {
             id: 'actions',
             header: 'Actions',
             cell: info => (
-              <ButtonToolbar>
-                <ButtonGroup size="sm">
-                  <Button
-                    variant="primary"
-                    onClick={() => handleEdit(info.row.original.id)}
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    variant="secondary"
-                    onClick={() => handleView(info.row.original.id)}
-                  >
-                    View
-                  </Button>
-                </ButtonGroup>
-              </ButtonToolbar>
+              <Stack direction="row" spacing={1}>
+                <Button
+                  size="small"
+                  variant="contained"
+                  startIcon={<EditIcon />}
+                  onClick={() => handleEdit(info.row.original.id)}
+                >
+                  Edit
+                </Button>
+                <Button
+                  size="small"
+                  variant="outlined"
+                  startIcon={<VisibilityIcon />}
+                  onClick={() => handleView(info.row.original.id)}
+                >
+                  View
+                </Button>
+              </Stack>
             ),
           },
         ],
@@ -143,113 +176,104 @@ export default function EntitiesList() {
   };
 
   return (
-    <Container fluid className="py-4">
-      <Row className="mb-4 align-items-center">
-        <Col>
-          <h2 className="mb-0">Users</h2>
-        </Col>
-        <Col xs="auto">
-          <Row className="g-3 align-items-center">
-            <Col>
-              <Form.Control
-                value={globalFilter ?? ''}
-                onChange={e => setGlobalFilter(e.target.value)}
-                placeholder="Search all columns..."
-              />
-            </Col>
-            <Col xs="auto">
-              <Button variant="primary" onClick={() => navigate('/edit-entity')}>
-                Add User
-              </Button>
-            </Col>
-          </Row>
-        </Col>
-      </Row>
+    <Container maxWidth={false} sx={{ py: 4 }}>
+      <Grid container spacing={2} alignItems="center" justifyContent="space-between" sx={{ mb: 2 }}>
+        <Grid>
+          <Typography variant="h4" component="h2">Users</Typography>
+        </Grid>
+        <Grid>
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center">
+            <TextField
+              size="small"
+              value={globalFilter ?? ''}
+              onChange={e => setGlobalFilter(e.target.value)}
+              placeholder="Search all columns..."
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon />
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <Button variant="contained" onClick={() => navigate('/edit-entity')}>
+              Add User
+            </Button>
+          </Stack>
+        </Grid>
+      </Grid>
 
       <Card>
-        <Card.Body className="p-0">
-          <div className="table-responsive">
-            <Table hover>
-              <thead className="bg-light">
+        <CardContent sx={{ p: 0 }}>
+          <TableContainer component={Paper}>
+            <Table size="small">
+              <TableHead>
                 {table.getHeaderGroups().map(headerGroup => (
-                  <tr key={headerGroup.id}>
+                  <TableRow key={headerGroup.id}>
                     {headerGroup.headers.map(header => (
-                      <th key={header.id} colSpan={header.colSpan}>
+                      <TableCell key={header.id} colSpan={header.colSpan}>
                         {header.isPlaceholder ? null : (
-                          <div
-                            className={header.column.getCanSort() ? 'cursor-pointer user-select-none' : ''}
+                          <Box
                             onClick={header.column.getToggleSortingHandler()}
+                            sx={{
+                              cursor: header.column.getCanSort() ? 'pointer' : 'default',
+                              userSelect: 'none',
+                              display: 'flex',
+                              alignItems: 'center',
+                            }}
                           >
                             {flexRender(
                               header.column.columnDef.header,
                               header.getContext()
                             )}
-                            <span className="ms-1">
+                            <Box component="span" sx={{ ml: 1, fontSize: '0.8rem' }}>
                               {{
                                 asc: '↑',
                                 desc: '↓',
                               }[header.column.getIsSorted()] ?? null}
-                            </span>
-                          </div>
+                            </Box>
+                          </Box>
                         )}
-                      </th>
+                      </TableCell>
                     ))}
-                  </tr>
+                  </TableRow>
                 ))}
-              </thead>
-              <tbody>
+              </TableHead>
+              <TableBody>
                 {table.getRowModel().rows.map(row => (
-                  <tr key={row.id}>
+                  <TableRow key={row.id} hover>
                     {row.getVisibleCells().map(cell => (
-                      <td key={cell.id}>
+                      <TableCell key={cell.id}>
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </td>
+                      </TableCell>
                     ))}
-                  </tr>
+                  </TableRow>
                 ))}
-              </tbody>
+              </TableBody>
             </Table>
-          </div>
-        </Card.Body>
-        <Card.Footer className="bg-light">
-          <Row className="align-items-center justify-content-center">
-            <Col xs="auto">
-              <ButtonGroup size="sm">
-                <Button
-                  variant="outline-secondary"
-                  onClick={() => table.setPageIndex(0)}
-                  disabled={!table.getCanPreviousPage()}
-                >
-                  {'<<'}
-                </Button>
-                <Button
-                  variant="outline-secondary"
-                  onClick={() => table.previousPage()}
-                  disabled={!table.getCanPreviousPage()}
-                >
-                  {'<'}
-                </Button>
-                <Button variant="outline-secondary" disabled>
-                  Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
-                </Button>
-                <Button
-                  variant="outline-secondary"
-                  onClick={() => table.nextPage()}
-                  disabled={!table.getCanNextPage()}
-                >
-                  {'>'}
-                </Button>
-                <Button
-                  variant="outline-secondary"
-                  onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                  disabled={!table.getCanNextPage()}
-                >
-                  {'>>'}
-                </Button>
-              </ButtonGroup>
-            </Col>
-          </Row>
-        </Card.Footer>
+          </TableContainer>
+        </CardContent>
+        <CardContent sx={{ bgcolor: 'background.default' }}>
+          <Stack direction="row" justifyContent="center" alignItems="center">
+            <ButtonGroup size="small" variant="outlined">
+              <Button onClick={() => table.setPageIndex(0)} disabled={!table.getCanPreviousPage()}>
+                <FirstPageIcon />
+              </Button>
+              <Button onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
+                <ChevronLeftIcon />
+              </Button>
+              <Button disabled>
+                Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+              </Button>
+              <Button onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+                <ChevronRightIcon />
+              </Button>
+              <Button onClick={() => table.setPageIndex(table.getPageCount() - 1)} disabled={!table.getCanNextPage()}>
+                <LastPageIcon />
+              </Button>
+            </ButtonGroup>
+          </Stack>
+        </CardContent>
       </Card>
     </Container>
   );

@@ -1,87 +1,36 @@
-import { useNavigate } from 'react-router-dom';
-import Form from '@rjsf/core';
+import { useNavigate, useParams } from 'react-router-dom';
+import Form from '@rjsf/mui';
 import validator from '@rjsf/validator-ajv8';
-import { Row, Col, Card } from 'react-bootstrap';
+import { useEffect, useState } from 'react';
+import { Grid } from '@mui/material';
+import client from '../utils/client';
 
 export default function EntityEdit() {
+  const { name, id } = useParams();
   const navigate = useNavigate();
 
-  // Define the JSON Schema for user entity
-  const schema = {
-    type: 'object',
-    required: ['username', 'email'],
-    properties: {
-      username: {
-        type: 'string',
-        title: 'Username',
-        minLength: 3,
-        maxLength: 30
-      },
-      email: {
-        type: 'string',
-        title: 'Email',
-        format: 'email'
-      },
-      firstName: {
-        type: 'string',
-        title: 'First Name'
-      },
-      lastName: {
-        type: 'string',
-        title: 'Last Name'
-      },
-      phone: {
-        type: 'string',
-        title: 'Phone Number',
-        pattern: '^[+]?[(]?[0-9]{3}[)]?[-\\s.]?[0-9]{3}[-\\s.]?[0-9]{4,6}$'
-      },
-      birthDate: {
-        type: 'string',
-        title: 'Birth Date',
-        format: 'date'
-      },
-      address: {
-        type: 'object',
-        title: 'Address',
-        properties: {
-          street: {
-            type: 'string',
-            title: 'Street'
-          },
-          city: {
-            type: 'string',
-            title: 'City'
-          },
-          state: {
-            type: 'string',
-            title: 'State'
-          },
-          zipCode: {
-            type: 'string',
-            title: 'ZIP Code',
-            pattern: '^[0-9]{5}(?:-[0-9]{4})?$'
-          }
-        }
-      }
-    }
-  };
+  console.log('Editing entity:', name, 'with ID:', id);
 
-  // Define UI Schema for custom layout and widgets
-  const uiSchema = {
-    'ui:order': ['username', 'email', 'firstName', 'lastName', 'phone', 'birthDate', 'address'],
-    username: {
-      'ui:placeholder': 'Enter username'
-    },
-    email: {
-      'ui:placeholder': 'Enter email address'
-    },
-    phone: {
-      'ui:placeholder': '(123) 456-7890'
-    },
-    address: {
-      'ui:order': ['street', 'city', 'state', 'zipCode']
-    }
-  };
+  // Load schema from backend via JSON-RPC
+  const [schema, setSchema] = useState({ model: {}, ui: {} });
+  useEffect(() => {
+    let active = true;
+
+    client
+      .request('getEntitySchema', { name })
+      .then((res) => {
+        if (active && res) setSchema(res);
+      })
+      .catch((err) => {
+        console.error('Failed to load schema:', err);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [name]);
+
+  console.log('Received schema:', schema);
 
   // Sample initial form data
   const formData = {
@@ -112,25 +61,16 @@ export default function EntityEdit() {
   };
 
   return (
-      <Row className="justify-content-center">
-        <Col md={8} lg={6}>
-          <Card>
-            <Card.Header as="h4" className="bg-primary text-white">
-              Edit User Profile
-            </Card.Header>
-            <Card.Body>
-              <Form
-                schema={schema}
-                uiSchema={uiSchema}
-                validator={validator}
-                formData={formData}
-                onSubmit={handleSubmit}
-                onError={handleError}
-                className="edit-entity-form"
-              />
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
+    <Grid container justifyContent="center">
+      <Form
+        schema={schema.model}
+        uiSchema={schema.ui}
+        validator={validator}
+        formData={formData}
+        onSubmit={handleSubmit}
+        onError={handleError}
+        className="edit-entity-form"
+      />
+    </Grid>
   );
 }

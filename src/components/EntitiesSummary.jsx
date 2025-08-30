@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Container, Row, Col, Card, Button } from 'react-bootstrap'
+import { Container, Card, CardContent, CardActions, Button, Grid, Stack, Typography } from '@mui/material'
 
 export default function EntitiesSummary() {
   const [submittingId, setSubmittingId] = useState(null)
@@ -24,35 +24,34 @@ export default function EntitiesSummary() {
   }
 
   return (
-    <Container fluid className="py-4">
-      <Row className="mb-3">
-        <Col>
-          <h2 className="mb-0">Entities Summary</h2>
-          <div className="text-muted">Overview of entities with quick actions</div>
-        </Col>
-      </Row>
+    <Container maxWidth={false} sx={{ py: 4 }}>
+      <Stack>
 
-      <Row className="g-3 g-md-4">
         {entities.map((e) => (
-          <Col key={e.id} xs={12} md={6} lg={4}>
-            <Card className="h-100">
-              <Card.Body className="d-flex flex-column">
-                <Card.Title className="mb-2">{e.name}</Card.Title>
-                <Card.Text className="flex-grow-1 text-muted">{e.description}</Card.Text>
-                <div className="d-grid">
-                  <Button
-                    variant="primary"
-                    onClick={() => handleSubmit(e)}
-                    disabled={submittingId === e.id}
-                  >
-                    {submittingId === e.id ? 'Submitting…' : 'Submit'}
-                  </Button>
-                </div>
-              </Card.Body>
-            </Card>
-          </Col>
+          <Card key={e.id} sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <CardContent sx={{ flexGrow: 1 }}>
+              <Typography variant="h6" component="div" gutterBottom>
+                {e.name}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {e.description}
+              </Typography>
+            </CardContent>
+            <CardActions sx={{ p: 2, pt: 0 }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => handleSubmit(e)}
+                disabled={submittingId === e.id}
+                fullWidth
+              >
+                {submittingId === e.id ? 'Submitting…' : 'Submit'}
+              </Button>
+            </CardActions>
+          </Card>
         ))}
-      </Row>
+      </Stack>
+
     </Container>
   )
 }
