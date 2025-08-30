@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import FacebookLogin from '@greatsumini/react-facebook-login';
+import { GoogleLogin } from '@react-oauth/google';
 import { Container, Box, Card, CardContent, Typography, Button } from '@mui/material';
 import FacebookIcon from '@mui/icons-material/Facebook';
 
@@ -40,6 +41,28 @@ export default function Login() {
                   </Button>
                 )}
               />
+<GoogleLogin
+                    onSuccess={(credentialResponse) => {
+                      console.log('Google credential:', credentialResponse)
+                      handleLoginSuccess(credentialResponse)
+                    }}
+                    onError={() => {
+                      console.error('Google Login Failed')
+                    }}
+                    useOneTap
+                  />
+
+                  <GoogleLogin
+                    onSuccess={(credentialResponse) => {
+                      console.log('Google credential:', credentialResponse)
+                      handleLoginSuccess(credentialResponse)
+                    }}
+                    onError={() => {
+                      console.error('Google Login Failed')
+                    }}
+                    useOneTap
+                  />
+
             </Box>
           </CardContent>
         </Card>
