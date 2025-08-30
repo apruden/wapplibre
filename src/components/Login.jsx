@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import FacebookLogin from '@greatsumini/react-facebook-login';
-import { Container, Row, Col, Card } from 'react-bootstrap';
+import { Container, Box, Card, CardContent, Typography, Button } from '@mui/material';
+import FacebookIcon from '@mui/icons-material/Facebook';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -11,29 +12,38 @@ export default function Login() {
   };
 
   return (
-    <Container fluid className="vh-100 d-flex align-items-center justify-content-center bg-light">
-      <Row className="justify-content-center">
-        <Col xs={12} sm={8} md={6} lg={4}>
-          <Card className="shadow-sm">
-            <Card.Body className="p-4">
-              <h2 className="text-center mb-4">Welcome to WappLibre</h2>
-              <div className="d-flex justify-content-center">
-                <FacebookLogin
-                  appId="your-app-id"
-                  autoLoad={true}
-                  fields="name,email,picture"
-                  callback={response => console.log(response)}
-                  onFailure={error => console.error('Login failed:', error)}
-                  onSuccess={handleLoginSuccess}
-                  cssClass="btn btn-primary w-100 d-flex align-items-center justify-content-center gap-2"
-                  textButton="Login with Facebook"
-                  icon="fa-facebook"
-                />
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
+    <Container maxWidth="sm">
+      <Box minHeight="100vh" display="flex" alignItems="center" justifyContent="center" bgcolor="background.default">
+        <Card elevation={3} sx={{ width: '100%' }}>
+          <CardContent sx={{ p: 4 }}>
+            <Typography variant="h5" align="center" gutterBottom>
+              Welcome to WappLibre
+            </Typography>
+            <Box display="flex" justifyContent="center">
+              <FacebookLogin
+                appId="your-app-id"
+                autoLoad
+                fields="name,email,picture"
+                onFail={(error) => console.error('Login failed:', error)}
+                onFailure={(error) => console.error('Login failed:', error)}
+                onSuccess={handleLoginSuccess}
+                callback={(response) => console.log(response)}
+                render={({ onClick }) => (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={onClick}
+                    startIcon={<FacebookIcon />}
+                    fullWidth
+                  >
+                    Login with Facebook
+                  </Button>
+                )}
+              />
+            </Box>
+          </CardContent>
+        </Card>
+      </Box>
     </Container>
   );
 }

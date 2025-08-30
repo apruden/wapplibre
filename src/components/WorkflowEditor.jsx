@@ -1,4 +1,5 @@
-import { useMemo } from 'react'
+import { useTheme } from '@mui/material/styles'
+import { Container, Card, CardHeader, CardContent, Box } from '@mui/material'
 import {
   ReactFlow,
   Background,
@@ -14,6 +15,7 @@ import '@xyflow/react/dist/style.css'
 
 // Place node: shown as a circle with a label
 function PlaceNode({ data, selected }) {
+  const theme = useTheme()
   return (
     <div style={{ textAlign: 'center' }}>
       <div
@@ -21,7 +23,7 @@ function PlaceNode({ data, selected }) {
           width: 80,
           height: 80,
           borderRadius: '50%',
-          border: selected ? '3px solid #0d6efd' : '2px solid #333',
+          border: selected ? `3px solid ${theme.palette.primary.main}` : '2px solid #333',
           background: '#fff',
           display: 'flex',
           alignItems: 'center',
@@ -44,6 +46,7 @@ function PlaceNode({ data, selected }) {
 
 // Transition node: a vertical bar with a label under it
 function TransitionNode({ data, selected }) {
+  const theme = useTheme()
   return (
     <div style={{ textAlign: 'center' }}>
       <div
@@ -51,7 +54,7 @@ function TransitionNode({ data, selected }) {
           width: 16,
           height: 80,
           borderRadius: 2,
-          background: selected ? '#0d6efd' : '#333',
+          background: selected ? theme.palette.primary.main : '#333',
           margin: '0 auto',
         }}
         title={data.label}
@@ -94,19 +97,26 @@ export default function WorkflowEditor() {
   const [edges, , onEdgesChange] = useEdgesState(initialEdges)
 
   return (
-    <div style={{ height: '70vh' }}>
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        nodeTypes={nodeTypes}
-        fitView
-      >
-        <MiniMap zoomable pannable />
-        <Controls />
-        <Background gap={16} />
-      </ReactFlow>
-    </div>
+    <Container maxWidth={false} sx={{ py: 2 }}>
+      <Card>
+        <CardHeader title="Workflow Editor" />
+        <CardContent sx={{ p: 0 }}>
+          <Box sx={{ height: '70vh' }}>
+            <ReactFlow
+              nodes={nodes}
+              edges={edges}
+              onNodesChange={onNodesChange}
+              onEdgesChange={onEdgesChange}
+              nodeTypes={nodeTypes}
+              fitView
+            >
+              <MiniMap zoomable pannable />
+              <Controls />
+              <Background gap={16} />
+            </ReactFlow>
+          </Box>
+        </CardContent>
+      </Card>
+    </Container>
   )
 }
