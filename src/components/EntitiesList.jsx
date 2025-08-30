@@ -40,44 +40,11 @@ import {
   ChevronRight as ChevronRightIcon,
   Search as SearchIcon,
 } from '@mui/icons-material';
+import client from '../utils/client';
 
 export default function EntitiesList() {
   const navigate = useNavigate();
-  
-  // Sample data - in a real app, this would come from an API
-  const [data] = useState([
-    {
-      id: 1,
-      username: 'johndoe',
-      email: 'john@example.com',
-      firstName: 'John',
-      lastName: 'Doe',
-      role: 'User',
-      status: 'Active',
-      lastLogin: '2025-07-28',
-    },
-    {
-      id: 2,
-      username: 'janesmith',
-      email: 'jane@example.com',
-      firstName: 'Jane',
-      lastName: 'Smith',
-      role: 'Admin',
-      status: 'Active',
-      lastLogin: '2025-07-29',
-    },
-    {
-      id: 3,
-      username: 'mikejohnson',
-      email: 'mike@example.com',
-      firstName: 'Mike',
-      lastName: 'Johnson',
-      role: 'User',
-      status: 'Inactive',
-      lastLogin: '2025-07-25',
-    },
-  ]);
-
+  const [data, setData] = useState([]);
   const [sorting, setSorting] = useState([]);
   const [globalFilter, setGlobalFilter] = useState('');
 
@@ -167,12 +134,11 @@ export default function EntitiesList() {
   });
 
   const handleEdit = (userId) => {
-    navigate(`/edit-entity/${userId}`);
+    navigate(`/entities/edit/${userId}`);
   };
 
   const handleView = (userId) => {
-    // Implement view functionality
-    console.log('View user:', userId);
+    navigate(`/entities/${userId}`);
   };
 
   return (

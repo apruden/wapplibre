@@ -68,15 +68,15 @@ function App() {
 
       <Container maxWidth={false} sx={{ mt: showNavbar ? 2 : 0 }}>
         <Routes>
+          <Route path="/entities/:name" element={<EntitiesList />} />
+          <Route path="/entities/:name/new" element={<EntityEdit />} />
+          <Route path="/entities/:name/:id/edit" element={<EntityEdit />} />
+          <Route path="/entities/:name/:id" element={<EntitiesSummary />} />
           <Route path="/login" element={<Login />} />
           <Route path="/chat" element={<Chat />} />
-          <Route path="/entities" element={<EntitiesList />} />
           <Route path="/locations" element={<LocationsList />} />
-          <Route path="/edit-entity/:name" element={<EntityEdit />} />
-          <Route path="/edit-entity/:name/:id" element={<EntityEdit />} />
           <Route path="/codemirror" element={<CodeMirrorPage />} />
           <Route path="/workflow" element={<WorkflowEditor />} />
-          <Route path="/entities-summary" element={<EntitiesSummary />} />
           <Route path="/" element={<Navigate to="/login" replace />} />
         </Routes>
       </Container>

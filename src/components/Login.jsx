@@ -41,27 +41,17 @@ export default function Login() {
                   </Button>
                 )}
               />
-<GoogleLogin
-                    onSuccess={(credentialResponse) => {
-                      console.log('Google credential:', credentialResponse)
-                      handleLoginSuccess(credentialResponse)
-                    }}
-                    onError={() => {
-                      console.error('Google Login Failed')
-                    }}
-                    useOneTap
-                  />
 
-                  <GoogleLogin
-                    onSuccess={(credentialResponse) => {
-                      console.log('Google credential:', credentialResponse)
-                      handleLoginSuccess(credentialResponse)
-                    }}
-                    onError={() => {
-                      console.error('Google Login Failed')
-                    }}
-                    useOneTap
-                  />
+              <GoogleLogin
+                onSuccess={(credentialResponse) => {
+                  console.log('Google credential:', credentialResponse)
+                  handleLoginSuccess(credentialResponse)
+                }}
+                onError={() => {
+                  console.error('Google Login Failed')
+                }}
+                useOneTap
+              />
 
             </Box>
           </CardContent>
