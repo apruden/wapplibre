@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Map, NavigationControl, Marker, Popup } from '@vis.gl/react-maplibre';
+import 'maplibre-gl/dist/maplibre-gl.css';
 import {
   Container,
   Grid,
@@ -62,114 +63,100 @@ export default function LocationsList() {
   };
 
   return (
-    <Container maxWidth={false} disableGutters>
-      <Box
-        sx={{
-          display: 'grid',
-          gridTemplateColumns: { xs: '320px 1fr', md: '360px 1fr' },
-          width: '100%',
-          height: 'calc(100vh - 64px)',
-        }}
-      >
-        {/* Left sidebar card */}
-        <Card sx={{ height: '100%', borderRadius: 0, boxShadow: 'none' }}>
-          <CardHeader
-            title={<Typography variant="h6">Locations</Typography>}
-            sx={{ bgcolor: 'primary.main', color: 'primary.contrastText' }}
-          />
-          <CardContent sx={{ p: 0, height: 'calc(100% - 64px)' }}>
-            <Box sx={{ height: '100%', overflow: 'auto' }}>
-              <List disablePadding>
-                {locations.map((location) => (
-                  <ListItem key={location.id} disablePadding>
-                    <ListItemButton
-                      selected={selectedLocation?.id === location.id}
-                      onClick={() => setSelectedLocation(location)}
-                      sx={{ alignItems: 'flex-start', py: 1.5, px: 2 }}
-                    >
-                      <Box
-                        sx={{
-                          width: 12,
-                          height: 12,
-                          borderRadius: '50%',
-                          bgcolor: getMarkerColor(location.type),
-                          mt: '6px',
-                          mr: 1.5,
-                          flex: '0 0 auto',
-                        }}
-                      />
-                      <Box sx={{ flex: 1, minWidth: 0 }}>
-                        <Typography variant="subtitle1" noWrap>
-                          {location.name}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary" noWrap>
-                          {location.address}
-                        </Typography>
-                        <Box sx={{ mt: 0.5 }}>
-                          <Chip label={location.type} size="small" color="default" />
-                        </Box>
+    <Box sx={{ width: '100vw', height: '80vh' }}>
+      <Card sx={{ height: '100%', borderRadius: 0, boxShadow: 'none' }}>
+        <CardHeader
+          title={<Typography variant="h6">Locations</Typography>}
+          sx={{ bgcolor: 'primary.main', color: 'primary.contrastText' }}
+        />
+        <CardContent sx={{ p: 0, height: 'calc(100% - 64px)' }}>
+          <Box sx={{ height: '100%', overflow: 'auto' }}>
+            <List disablePadding>
+              {locations.map((location) => (
+                <ListItem key={location.id} disablePadding>
+                  <ListItemButton
+                    selected={selectedLocation?.id === location.id}
+                    onClick={() => setSelectedLocation(location)}
+                    sx={{ alignItems: 'flex-start', py: 1.5, px: 2 }}
+                  >
+                    <Box
+                      sx={{
+                        width: 12,
+                        height: 12,
+                        borderRadius: '50%',
+                        bgcolor: getMarkerColor(location.type),
+                        mt: '6px',
+                        mr: 1.5,
+                        flex: '0 0 auto',
+                      }}
+                    />
+                    <Box sx={{ flex: 1, minWidth: 0 }}>
+                      <Typography variant="subtitle1" noWrap>
+                        {location.name}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary" noWrap>
+                        {location.address}
+                      </Typography>
+                      <Box sx={{ mt: 0.5 }}>
+                        <Chip label={location.type} size="small" color="default" />
                       </Box>
-                    </ListItemButton>
-                  </ListItem>
-                ))}
-              </List>
-            </Box>
-          </CardContent>
-        </Card>
+                    </Box>
+                  </ListItemButton>
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+        </CardContent>
+      </Card>
 
-        {/* Right map area filling remaining space */}
-        <Box sx={{ width: '100%', height: '100%' }}>
-          <Map
-            initialViewState={initialViewState}
-            style={{ width: '100%', height: '100%' }}
-            mapStyle="https://api.maptiler.com/maps/streets/style.json?key=euWhRAhzgWGOexN5Fzkd"
+      <Map
+        initialViewState={initialViewState}
+        mapStyle="https://api.maptiler.com/maps/streets/style.json?key=euWhRAhzgWGOexN5Fzkd"
+      >
+        <NavigationControl position="top-right" />
+
+        {locations.map((location) => (
+          <Marker
+            key={location.id}
+            longitude={location.coordinates[0]}
+            latitude={location.coordinates[1]}
+            onClick={(e) => {
+              e.originalEvent.stopPropagation();
+              setSelectedLocation(location);
+            }}
           >
-            <NavigationControl position="top-right" />
+            <Box
+              sx={{
+                width: 12,
+                height: 12,
+                bgcolor: getMarkerColor(location.type),
+                borderRadius: '50%',
+                border: '2px solid white',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.3)',
+              }}
+            />
+          </Marker>
+        ))}
 
-            {locations.map((location) => (
-              <Marker
-                key={location.id}
-                longitude={location.coordinates[0]}
-                latitude={location.coordinates[1]}
-                onClick={(e) => {
-                  e.originalEvent.stopPropagation();
-                  setSelectedLocation(location);
-                }}
-              >
-                <Box
-                  sx={{
-                    width: 20,
-                    height: 20,
-                    bgcolor: getMarkerColor(location.type),
-                    borderRadius: '50%',
-                    border: '2px solid white',
-                    boxShadow: '0 2px 4px rgba(0,0,0,0.3)',
-                  }}
-                />
-              </Marker>
-            ))}
-
-            {selectedLocation && (
-              <Popup
-                longitude={selectedLocation.coordinates[0]}
-                latitude={selectedLocation.coordinates[1]}
-                offset={[0, -10]}
-                onClose={() => setSelectedLocation(null)}
-                closeButton
-                closeOnClick={false}
-              >
-                <Typography variant="subtitle1" gutterBottom>
-                  {selectedLocation.name}
-                </Typography>
-                <Typography variant="body2" gutterBottom>
-                  {selectedLocation.address}
-                </Typography>
-                <Chip label={selectedLocation.type} size="small" />
-              </Popup>
-            )}
-          </Map>
-        </Box>
-      </Box>
-    </Container>
+        {selectedLocation && (
+          <Popup
+            longitude={selectedLocation.coordinates[0]}
+            latitude={selectedLocation.coordinates[1]}
+            offset={[0, -10]}
+            onClose={() => setSelectedLocation(null)}
+            closeButton
+            closeOnClick={false}
+          >
+            <Typography variant="subtitle1" gutterBottom>
+              {selectedLocation.name}
+            </Typography>
+            <Typography variant="body2" gutterBottom>
+              {selectedLocation.address}
+            </Typography>
+            <Chip label={selectedLocation.type} size="small" />
+          </Popup>
+        )}
+      </Map>
+    </Box>
   );
 }
