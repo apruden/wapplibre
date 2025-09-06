@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import {
   useReactTable,
   getCoreRowModel,
@@ -7,7 +7,7 @@ import {
   getPaginationRowModel,
   flexRender,
 } from '@tanstack/react-table';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   Container,
   Grid,
@@ -42,11 +42,48 @@ import {
 } from '@mui/icons-material';
 import client from '../utils/client';
 
-export default function EntitiesList() {
+export default function EntitiesTable() {
+  const { name } = useParams();
   const navigate = useNavigate();
   const [data, setData] = useState([]);
+  const [schema, setSchema] = useState({ model: {}, ui: {}, uiTable: {} });
+
   const [sorting, setSorting] = useState([]);
   const [globalFilter, setGlobalFilter] = useState('');
+
+  useEffect(() => {
+    let active = true;
+
+    client
+      .request('getEntitySchema', { name })
+      .then((res) => {
+        if (active && res) setSchema(res);
+      })
+      .catch((err) => {
+        console.error('Failed to load schema:', err);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [name]);
+
+  useEffect(() => {
+    let active = true;
+
+    client
+      .request('getEntities', { name, query: '*' })
+      .then((res) => {
+        if (active && res) setData(res);
+      })
+      .catch((err) => {
+        console.error('Failed to load data:', err);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [schema]);
 
   const columns = useMemo(
     () => [
@@ -79,8 +116,8 @@ export default function EntitiesList() {
             accessorKey: 'status',
             header: 'Status',
             cell: info => {
-              const status = info.getValue();
-              const color = status.toLowerCase() === 'active' ? 'success' : 'error';
+              const status = info?.getValue();
+              const color = status?.toLowerCase() === 'active' ? 'success' : 'error';
               return <Chip label={status} color={color} size="small" />;
             },
           },

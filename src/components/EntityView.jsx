@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { Grid } from '@mui/material';
 import client from '../utils/client';
 
-export default function EntityEdit() {
+export default function EntityView() {
   const { name, id } = useParams();
   const navigate = useNavigate();
 

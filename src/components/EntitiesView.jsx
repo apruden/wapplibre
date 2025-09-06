@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Container, Card, CardContent, CardActions, Button, Grid, Stack, Typography } from '@mui/material'
 
-export default function EntitiesSummary() {
+export default function EntitiesView() {
   const [submittingId, setSubmittingId] = useState(null)
 
   // Sample entities; replace with API data if available
@@ -26,7 +26,6 @@ export default function EntitiesSummary() {
   return (
     <Container maxWidth={false} sx={{ py: 4 }}>
       <Stack>
-
         {entities.map((e) => (
           <Card key={e.id} sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
             <CardContent sx={{ flexGrow: 1 }}>

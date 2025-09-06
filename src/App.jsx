@@ -11,11 +11,12 @@ import {
 import Login from './components/Login'
 import Chat from './components/Chat'
 import EntityEdit from './components/EntityEdit'
-import EntitiesList from './components/EntitiesList'
+import EntitiesTable from './components/EntitiesTable'
 import LocationsList from './components/LocationsList'
 import CodeMirrorPage from './components/CodeMirrorPage'
 import WorkflowEditor from './components/WorkflowEditor'
-import EntitiesSummary from './components/EntitiesSummary'
+import EntitiesView from './components/EntitiesView'
+import EntityView from './components/EntityView'
 
 function App() {
   const location = useLocation()
@@ -68,10 +69,11 @@ function App() {
 
       <Container maxWidth={false} sx={{ mt: showNavbar ? 2 : 0 }}>
         <Routes>
-          <Route path="/entities/:name" element={<EntitiesList />} />
+          <Route path="/entities/:name/table" element={<EntitiesTable />} />
+          <Route path="/entities/:name/view" element={<EntitiesView />} />
           <Route path="/entities/:name/new" element={<EntityEdit />} />
           <Route path="/entities/:name/:id/edit" element={<EntityEdit />} />
-          <Route path="/entities/:name/:id" element={<EntitiesSummary />} />
+          <Route path="/entities/:name/:id" element={<EntityView />} />
           <Route path="/login" element={<Login />} />
           <Route path="/chat" element={<Chat />} />
           <Route path="/locations" element={<LocationsList />} />
