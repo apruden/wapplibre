@@ -13,7 +13,7 @@ export default function EntityEdit() {
 
   // Load schema from backend via JSON-RPC
   const [schema, setSchema] = useState({ model: {}, ui: {} });
-  
+
   useEffect(() => {
     let active = true;
 
@@ -31,30 +31,17 @@ export default function EntityEdit() {
     };
   }, [name]);
 
-  console.log('Received schema:', schema);
-
-  // Sample initial form data
-  const formData = {
-    username: '',
-    email: '',
-    firstName: '',
-    lastName: '',
-    phone: '',
-    birthDate: '',
-    address: {
-      street: '',
-      city: '',
-      state: '',
-      zipCode: ''
-    }
-  };
+  const formData = { };
 
   const handleSubmit = ({ formData }) => {
-    console.log('Form submitted:', formData);
-    // Here you would typically send the data to your backend
-    // For now, we'll just log it and show a success message
-    alert('User data saved successfully!');
-    navigate('/chat'); // Navigate back to chat or wherever appropriate
+
+    client.request('saveEntity', { id, name, data: formData })
+      .then(() => {
+        navigate('/chat');
+      })
+      .catch((err) => {
+        console.error('Failed to update entity:', err);
+      });
   };
 
   const handleError = (errors) => {

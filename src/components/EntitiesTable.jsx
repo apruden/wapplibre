@@ -9,27 +9,18 @@ import {
 } from '@tanstack/react-table';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
-  Container,
-  Grid,
-  Card,
-  CardContent,
-  CardHeader,
-  TextField,
   Button,
   Table,
   TableBody,
   TableCell,
   TableContainer,
+  TablePagination,
   TableHead,
   TableRow,
-  Paper,
   Chip,
-  ButtonGroup,
   Stack,
-  Typography,
   Box,
-  InputAdornment,
-  IconButton,
+  Paper,
 } from '@mui/material';
 import {
   Edit as EditIcon,
@@ -179,105 +170,62 @@ export default function EntitiesTable() {
   };
 
   return (
-    <Container maxWidth={false} sx={{ py: 4 }}>
-      <Grid container spacing={2} alignItems="center" justifyContent="space-between" sx={{ mb: 2 }}>
-        <Grid>
-          <Typography variant="h4" component="h2">Users</Typography>
-        </Grid>
-        <Grid>
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="center">
-            <TextField
-              size="small"
-              value={globalFilter ?? ''}
-              onChange={e => setGlobalFilter(e.target.value)}
-              placeholder="Search all columns..."
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon />
-                  </InputAdornment>
-                ),
-              }}
-            />
-            <Button variant="contained" onClick={() => navigate('/edit-entity')}>
-              Add User
-            </Button>
-          </Stack>
-        </Grid>
-      </Grid>
-
-      <Card>
-        <CardContent sx={{ p: 0 }}>
-          <TableContainer component={Paper}>
-            <Table size="small">
-              <TableHead>
-                {table.getHeaderGroups().map(headerGroup => (
-                  <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map(header => (
-                      <TableCell key={header.id} colSpan={header.colSpan}>
-                        {header.isPlaceholder ? null : (
-                          <Box
-                            onClick={header.column.getToggleSortingHandler()}
-                            sx={{
-                              cursor: header.column.getCanSort() ? 'pointer' : 'default',
-                              userSelect: 'none',
-                              display: 'flex',
-                              alignItems: 'center',
-                            }}
-                          >
-                            {flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
-                            <Box component="span" sx={{ ml: 1, fontSize: '0.8rem' }}>
-                              {{
-                                asc: '↑',
-                                desc: '↓',
-                              }[header.column.getIsSorted()] ?? null}
-                            </Box>
-                          </Box>
+    <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+      <TableContainer>
+        <Table>
+          <TableHead>
+            {table.getHeaderGroups().map(headerGroup => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map(header => (
+                  <TableCell key={header.id} colSpan={header.colSpan} sx={{ width: 'auto' }}>
+                    {header.isPlaceholder ? null : (
+                      <Box
+                        onClick={header.column.getToggleSortingHandler()}
+                        sx={{
+                          cursor: header.column.getCanSort() ? 'pointer' : 'default',
+                          userSelect: 'none',
+                          display: 'flex',
+                          alignItems: 'center',
+                          width: '100%',
+                        }}
+                      >
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
                         )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
+                        <Box component="span" sx={{ ml: 1, fontSize: '0.8rem' }}>
+                          {{
+                            asc: '↑',
+                            desc: '↓',
+                          }[header.column.getIsSorted()] ?? null}
+                        </Box>
+                      </Box>
+                    )}
+                  </TableCell>
                 ))}
-              </TableHead>
-              <TableBody>
-                {table.getRowModel().rows.map(row => (
-                  <TableRow key={row.id} hover>
-                    {row.getVisibleCells().map(cell => (
-                      <TableCell key={cell.id}>
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </TableCell>
-                    ))}
-                  </TableRow>
+              </TableRow>
+            ))}
+          </TableHead>
+          <TableBody>
+            {table.getRowModel().rows.map(row => (
+              <TableRow key={row.id} hover>
+                {row.getVisibleCells().map(cell => (
+                  <TableCell key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
                 ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </CardContent>
-        <CardContent sx={{ bgcolor: 'background.default' }}>
-          <Stack direction="row" justifyContent="center" alignItems="center">
-            <ButtonGroup size="small" variant="outlined">
-              <Button onClick={() => table.setPageIndex(0)} disabled={!table.getCanPreviousPage()}>
-                <FirstPageIcon />
-              </Button>
-              <Button onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
-                <ChevronLeftIcon />
-              </Button>
-              <Button disabled>
-                Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
-              </Button>
-              <Button onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
-                <ChevronRightIcon />
-              </Button>
-              <Button onClick={() => table.setPageIndex(table.getPageCount() - 1)} disabled={!table.getCanNextPage()}>
-                <LastPageIcon />
-              </Button>
-            </ButtonGroup>
-          </Stack>
-        </CardContent>
-      </Card>
-    </Container>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
+        component="div"
+        count={5}
+        rowsPerPage={10}
+        page={1}
+      />
+    </Paper>
   );
 }
