@@ -95,20 +95,22 @@ export default function Chat() {
   };
 
   return (
-    <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#f0f2f5' }}>
-      <Grid container sx={{ flexGrow: 1 }}>
-        {/* Left Sidebar for Avatars */}
-        <Grid
-          item
-          xs={12}
-          md={3}
-          sx={{
-            borderRight: '1px solid #e0e0e0',
-            backgroundColor: '#ffffff',
-            p: 2,
-            display: isMobile && !showUserListMobile ? 'none' : 'block',
-          }}
-        >
+    <Box sx={{ 
+      height: '100vh',
+      display: 'flex',
+      flexDirection: 'row',
+      backgroundColor: '#f0f2f5' 
+      }}>
+      <Box
+        sx={{
+          width: isMobile ? '100vw' : '20vw',
+          flexGrow: 1,
+          display: isMobile && !showUserListMobile ? 'none' : 'flex',
+          flexDirection: 'column',
+          overflowX: 'scroll',
+          backgroundColor: '#ff00ff',
+        }}
+      >
           <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold', color: '#212121', fontSize: '1.1rem' }}>
             Contacts
           </Typography>
@@ -146,20 +148,25 @@ export default function Chat() {
               </ListItem>
             ))}
           </List>
-        </Grid>
-
-        {/* Main Chat Area */}
-        <Grid
-          item
-          xs={12}
-          md={9}
-          sx={{
-            display: isMobile && showUserListMobile ? 'none' : 'flex',
-            flexDirection: 'column',
-          }}
-        >
-          {/* Chat Header */}
-          <Paper elevation={1} sx={{ p: 2, backgroundColor: '#ffffff', borderBottom: '1px solid #e0e0e0', display: 'flex', alignItems: 'center', borderRadius: '8px 8px 0 0' }}>
+      </Box>  
+      <Box
+        sx={{
+          width: isMobile ? '100vw' : '60vw',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+          <Paper elevation={1} sx={{
+            mt: 12,
+            position: 'fixed',
+            top: 0,
+            width: '60vw', 
+            backgroundColor: '#ffff00', 
+            borderBottom: '1px solid #e0e0e0',
+            display: 'flex', 
+            alignItems: 'center',
+            borderRadius: '8px 8px 0 0'
+            }}>
             {isMobile && (
               <IconButton onClick={handleBackButtonClick} sx={{ mr: 1 }}>
                 <KeyboardBackspaceIcon />
@@ -170,8 +177,14 @@ export default function Chat() {
             </Typography>
           </Paper>
 
-          {/* Messages Display */}
-          <Box sx={{ flexGrow: 1, overflowY: 'auto', p: 3, display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Box sx={{ 
+            flexGrow: 1, 
+            p: 3, 
+            display: 'flex', 
+            flexDirection: 'column',
+            width: '60vw',
+            gap: 2,
+            }}>
             {selectedChatUser ? (
               messages
                 .filter(
@@ -227,16 +240,27 @@ export default function Chat() {
             )}
           </Box>
 
-          {/* Message Input */}
-          <Paper elevation={3} sx={{ p: 2, backgroundColor: '#ffffff', borderTop: '1px solid #e0e0e0', borderRadius: '0 0 8px 8px' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Paper elevation={3} sx={{ 
+            pt: 2,
+            pb: 2,
+            width: '60vw',
+            position: 'fixed',
+            bottom: 0,
+            backgroundColor: '#00ffff', 
+            borderTop: '1px solid #e0e0e0', 
+            borderRadius: '0 0 8px 8px',
+             }}>
+            <Box sx={{ 
+              display: 'flex',
+              alignItems: 'center',
+              }}>
               <TextField
                 fullWidth
                 variant="outlined"
                 placeholder="Type a message..."
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
-                onKeyPress={(e) => {
+                onKeyUp={(e) => {
                   if (e.key === 'Enter') {
                     handleSendMessage();
                   }
@@ -258,13 +282,15 @@ export default function Chat() {
                   '& fieldset': { border: 'none' },
                 }}
               />
-              <IconButton color="primary" onClick={handleSendMessage} disabled={!newMessage.trim() || !selectedChatUser} sx={{ color: '#1976d2' }}>
+              <IconButton color="primary"
+                onClick={handleSendMessage}
+                disabled={!newMessage.trim() || !selectedChatUser}
+                sx={{ color: '#1976d2' }}>
                 <SendIcon />
               </IconButton>
             </Box>
           </Paper>
-        </Grid>
-      </Grid>
+      </Box>
     </Box>
   );
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
+import { Box } from '@mui/material';
 
 const sampleCode = `// Sample JavaScript
 function greet(name) {
@@ -18,14 +19,13 @@ export default function CodeMirrorPage() {
   }, []);
 
   return (
-    <div style={{ maxWidth: 800, margin: '0 auto', padding: 24 }}>
-      <h2>JavaScript Code Editor</h2>
+    <Box sx={{ height: '80vh', width: '80vw' }}>
       <CodeMirror
         value={code}
         height="400px"
         extensions={[javascript({ jsx: true })]}
         onChange={onChange}
       />
-    </div>
+    </Box>
   );
 }

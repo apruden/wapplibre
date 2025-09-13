@@ -97,26 +97,19 @@ export default function WorkflowEditor() {
   const [edges, , onEdgesChange] = useEdgesState(initialEdges)
 
   return (
-    <Container maxWidth={false} sx={{ py: 2 }}>
-      <Card>
-        <CardHeader title="Workflow Editor" />
-        <CardContent sx={{ p: 0 }}>
-          <Box sx={{ height: '70vh' }}>
-            <ReactFlow
-              nodes={nodes}
-              edges={edges}
-              onNodesChange={onNodesChange}
-              onEdgesChange={onEdgesChange}
-              nodeTypes={nodeTypes}
-              fitView
-            >
-              <MiniMap zoomable pannable />
-              <Controls />
-              <Background gap={16} />
-            </ReactFlow>
-          </Box>
-        </CardContent>
-      </Card>
-    </Container>
+    <Box sx={{ height: '80vh', width: '80vw' }}>
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        nodeTypes={nodeTypes}
+        fitView
+      >
+        <MiniMap zoomable pannable />
+        <Controls />
+        <Background gap={16} />
+      </ReactFlow>
+    </Box>
   )
 }

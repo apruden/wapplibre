@@ -3,15 +3,15 @@ import { Map, NavigationControl, Marker, Popup } from '@vis.gl/react-maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import {
   Box,
+  Button,
   Chip,
   Typography,
   Tab,
   Card,
-  CardHeader,
   CardContent,
-  List,
-  ListItem,
-  ListItemButton,
+  CardMedia,
+  CardActions,
+  Grid,
 } from '@mui/material';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
@@ -33,6 +33,7 @@ export default function LocationsList() {
       coordinates: [-122.4194, 37.7749], // San Francisco
       address: '123 Market St, San Francisco, CA',
       type: 'office',
+      imageUrl: 'https://placeholder.pics/svg/300',
     },
     {
       id: 2,
@@ -40,6 +41,7 @@ export default function LocationsList() {
       coordinates: [-122.4078, 37.7832], // SF Financial District
       address: '456 Montgomery St, San Francisco, CA',
       type: 'branch',
+      imageUrl: 'https://placeholder.pics/svg/300',
     },
     {
       id: 3,
@@ -47,6 +49,7 @@ export default function LocationsList() {
       coordinates: [-122.3977, 37.7896], // SF SOMA
       address: '789 Howard St, San Francisco, CA',
       type: 'office',
+      imageUrl: 'https://placeholder.pics/svg/300',
     },
   ];
 
@@ -77,54 +80,53 @@ export default function LocationsList() {
         </TabList>
       </Box>
       <TabPanel value="1">
-        <Card sx={{ height: '100%', borderRadius: 0, boxShadow: 'none' }}>
-          <CardHeader
-            title={<Typography variant="h6">Locations</Typography>}
-            sx={{ bgcolor: 'primary.main', color: 'primary.contrastText' }}
-          />
-          <CardContent sx={{ p: 0, height: 'calc(100% - 64px)' }}>
-            <Box sx={{ height: '100%', overflow: 'auto' }}>
-              <List disablePadding>
-                {locations.map((location) => (
-                  <ListItem key={location.id} disablePadding>
-                    <ListItemButton
-                      selected={selectedLocation?.id === location.id}
-                      onClick={() => setSelectedLocation(location)}
-                      sx={{ alignItems: 'flex-start', py: 1.5, px: 2 }}
-                    >
-                      <Box
-                        sx={{
-                          width: 12,
-                          height: 12,
-                          borderRadius: '50%',
-                          bgcolor: getMarkerColor(location.type),
-                          mt: '6px',
-                          mr: 1.5,
-                          flex: '0 0 auto',
-                        }}
-                      />
-                      <Box sx={{ flex: 1, minWidth: 0 }}>
-                        <Typography variant="subtitle1" noWrap>
-                          {location.name}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary" noWrap>
-                          {location.address}
-                        </Typography>
-                        <Box sx={{ mt: 0.5 }}>
-                          <Chip label={location.type} size="small" color="default" />
-                        </Box>
-                      </Box>
-                    </ListItemButton>
-                  </ListItem>
-                ))}
-              </List>
-            </Box>
-          </CardContent>
-        </Card>
+        <Box sx={{ width: '80vw', height: '80vh' }}>
+          <Grid container spacing={1} columns={{ xs: 12, md: 3 }}>
+            {locations.map((location) => (
+              <Grid item key={location.id} xs={12} md={4}>
+                <Card
+                  sx={{
+                    boxShadow: 3,
+                    borderRadius: 2,
+                  }}
+                >
+                  <CardMedia
+                    component="img"
+                    height="300"
+                    image={location.imageUrl}
+                    alt={location.name}
+                    sx={{
+                      objectFit: 'cover',
+                      borderTopLeftRadius: 8,
+                      borderTopRightRadius: 8
+                    }}
+                  />
+                  <CardContent sx={{ flexGrow: 1, p: 3 }}>
+                    <Typography gutterBottom variant="h6" component="h2" sx={{ fontWeight: 600 }}>
+                      {location.name}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {location.name} - {location.address}
+                    </Typography>
+                  </CardContent>
+                  <CardActions sx={{ p: 2, pt: 0, justifyContent: 'flex-end' }}>
+                    <Button size="small" color="primary">
+                      View Details
+                    </Button>
+                    <Button size="small" color="secondary">
+                      Add to Cart
+                    </Button>
+                  </CardActions>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+
+        </Box>
       </TabPanel>
       <TabPanel value="2">
         <Map
-          style={{ width: '100%', height: '70vh', zIndex: 0 }}
+          style={{ width: '80vw', height: '80vh', zIndex: 0 }}
           initialViewState={initialViewState}
           mapStyle="https://api.maptiler.com/maps/streets/style.json?key=euWhRAhzgWGOexN5Fzkd"
         >
